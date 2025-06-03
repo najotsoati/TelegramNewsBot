@@ -1,0 +1,8 @@
+{
+  "feeds": [
+    "https://gazeta.uz/rss/",
+    "https://daryo.uz/feed/",
+    "https://www.bbc.com/uzbek/index.xml"
+  ],
+  "channel": "@yangiliklar_ai"
+}
