@@ -1,4 +1,6 @@
 import os
+from datetime import datetime
+import pytz
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
@@ -16,11 +18,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def fetch_news(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ADMIN_ID:
         return await update.message.reply_text("Siz admin emassiz.")
+
     articles = get_feed_articles(get_feeds())
+
+    tz = pytz.timezone("Asia/Tashkent")
+    now = datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S")
+
     for article in articles:
         text = f"📰 {article['title']}\n\n{article['summary']}\n\n🔗 {article['link']}"
         translated = translate_to_uzbek(text)
-        await context.bot.send_message(chat_id=get_channel(), text=translated)
+        final_text = f"{translated}\n\n🕒 Yangilik vaqti: {now}"
+        await context.bot.send_message(chat_id=get_channel(), text=final_text)
 
 async def addsource(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ADMIN_ID:
@@ -58,4 +66,3 @@ app.add_handler(CommandHandler("removesource", removesource))
 app.add_handler(CommandHandler("setchannel", setchannel))
 
 app.run_polling()
-  
